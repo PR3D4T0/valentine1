@@ -2,12 +2,16 @@
 <html>
 <head>
   <title>Valentine 💖</title>
+
+  <!-- ✅ REQUIRED FOR MOBILE SCALING -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       background: #ffe6ee;
       font-family: 'Pacifico', cursive;
       overflow: hidden;
@@ -15,24 +19,26 @@
     }
 
     h1 {
-      margin-top: 40px;
-      font-size: 42px;
+      margin-top: 4vh;
+      font-size: clamp(26px, 6vw, 42px);
       color: #c7004c;
+      padding: 0 10px;
     }
 
     .buttons {
-      margin-top: 60px;
+      margin-top: 6vh;
       position: relative;
     }
 
+    /* 🔵 RESPONSIVE BUTTONS */
     .circle-btn {
-      width: 120px;
-      height: 120px;
+      width: clamp(90px, 22vw, 120px);
+      height: clamp(90px, 22vw, 120px);
       border-radius: 50%;
       border: none;
-      font-size: 24px;
+      font-size: clamp(18px, 5vw, 24px);
       cursor: pointer;
-      margin: 0 40px;
+      margin: 0 5vw;
       transition: transform 0.2s ease;
     }
 
@@ -49,9 +55,9 @@
       position: fixed;
     }
 
-    /* 🎯 CHARACTER AT CENTER */
+    /* 🎯 CHARACTER RESPONSIVE CENTER */
     #character {
-      width: 200px;
+      width: clamp(150px, 35vw, 220px);
       position: fixed;
       left: 50%;
       top: 55%;
@@ -64,21 +70,21 @@
 
     #bullet {
       position: fixed;
-      width: 25px;
+      width: clamp(18px, 5vw, 25px);
       display: none;
       z-index: 10;
     }
 
     .broken-heart {
       position: fixed;
-      font-size: 26px;
+      font-size: clamp(20px, 6vw, 26px);
       animation: break 1.2s ease forwards;
       pointer-events: none;
     }
 
     .love-heart {
       position: fixed;
-      font-size: 24px;
+      font-size: clamp(18px, 5vw, 24px);
       animation: floatUp 2s ease forwards;
       pointer-events: none;
     }
@@ -95,9 +101,10 @@
 
     #final {
       display: none;
-      margin-top: 120px;
-      font-size: 48px;
+      margin-top: 10vh;
+      font-size: clamp(28px, 8vw, 48px);
       color: #c7004c;
+      padding: 0 10px;
     }
   </style>
 </head>
@@ -135,22 +142,30 @@
 
     let step = 0;
 
-    /* 🎯 ROTATE CHARACTER WITH CURSOR */
+    /* 🎯 ROTATE CHARACTER (MOUSE ONLY) */
     document.addEventListener("mousemove", (e) => {
+      if (isTouchDevice) return;
+      rotateCharacter(e.clientX, e.clientY);
+    });
+
+    /* 📱 ROTATE CHARACTER (TOUCH) */
+    document.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      rotateCharacter(touch.clientX, touch.clientY);
+    });
+
+    function rotateCharacter(x, y) {
       const r = character.getBoundingClientRect();
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      const angle = Math.atan2(dy, dx) * 57.3;
+      const angle = Math.atan2(y - cy, x - cx) * 57.3;
       character.style.transform =
         "translate(-50%, -50%) rotate(" + angle + "deg)";
-    });
+    }
 
     /* ❤️ YES CLICK */
     yesBtn.addEventListener("click", () => {
       spawnLove();
-
       if (step < questions.length - 1) {
         step++;
         question.innerText = questions[step];
@@ -159,10 +174,20 @@
       }
     });
 
-    /* 🔫 NO CLICK → SHOOT ONCE */
-    noBtn.addEventListener("mouseenter", shootNo);
+    /* 📱🖥 DEVICE DETECTION */
+    const isTouchDevice =
+      'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    function shootNo() {
+    if (isTouchDevice) {
+      noBtn.addEventListener("touchstart", shootNo);
+    } else {
+      noBtn.addEventListener("mouseenter", shootNo);
+    }
+
+    /* 🔫 SHOOT */
+    function shootNo(e) {
+      e?.preventDefault?.();
+
       const cr = character.getBoundingClientRect();
       const nr = noBtn.getBoundingClientRect();
 
@@ -193,12 +218,12 @@
       }, 550);
     }
 
-    /* ♻️ RESPAWN NO ON RIGHT SIDE */
+    /* ♻️ RESPAWN NO (RIGHT SIDE) */
     function respawnNo() {
-      const minX = window.innerWidth / 2 + 80;
-      const maxX = window.innerWidth - 160;
+      const minX = window.innerWidth / 2 + 60;
+      const maxX = window.innerWidth - 140;
       const x = Math.random() * (maxX - minX) + minX;
-      const y = Math.random() * (window.innerHeight - 200) + 100;
+      const y = Math.random() * (window.innerHeight - 180) + 100;
 
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
@@ -232,7 +257,7 @@
       }
     }
 
-    /* 🎉 FINAL CELEBRATION */
+    /* 🎉 FINAL */
     function endCelebration() {
       question.style.display = "none";
       buttons.style.display = "none";
@@ -241,7 +266,6 @@
       spawnLove();
     }
 
-    /* INITIAL NO POSITION */
     respawnNo();
   </script>
 
