@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Valentine 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #ffe6ee;
+      font-family: 'Pacifico', cursive;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 42px;
+      color: #c7004c;
+    }
+
+    .buttons {
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .circle-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      margin: 0 40px;
+      transition: transform 0.2s ease;
+    }
+
+    #yesBtn {
+      background: #ff5c8a;
+      color: white;
+      box-shadow: 0 6px 15px rgba(255,92,138,0.4);
+    }
+
+    #noBtn {
+      background: white;
+      color: #c7004c;
+      border: 2px solid #ff5c8a;
+      position: fixed;
+    }
+
+    /* 🎯 CHARACTER AT CENTER */
+    #character {
+      width: 200px;
+      position: fixed;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
+      pointer-events: none;
+      transition: transform 0.12s linear;
+      z-index: 5;
+    }
+
+    #bullet {
+      position: fixed;
+      width: 25px;
+      display: none;
+      z-index: 10;
+    }
+
+    .broken-heart {
+      position: fixed;
+      font-size: 26px;
+      animation: break 1.2s ease forwards;
+      pointer-events: none;
+    }
+
+    .love-heart {
+      position: fixed;
+      font-size: 24px;
+      animation: floatUp 2s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes break {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(120px) scale(0.3); }
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-150px); }
+    }
+
+    #final {
+      display: none;
+      margin-top: 120px;
+      font-size: 48px;
+      color: #c7004c;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 id="question">Do you like surprises? 💕</h1>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn" class="circle-btn">YES</button>
+    <button id="noBtn" class="circle-btn">NO</button>
+  </div>
+
+  <div id="final">Happy Valentine’s Day 💖💐</div>
+
+  <img id="character" src="character.png">
+  <img id="bullet" src="bullet.png">
+
+  <script>
+    const character = document.getElementById("character");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const bullet = document.getElementById("bullet");
+    const question = document.getElementById("question");
+    const buttons = document.getElementById("buttons");
+    const finalText = document.getElementById("final");
+
+    const questions = [
+      "Do you like surprises? 💕",
+      "Do you believe in love? 💖",
+      "Do you trust me? 💗",
+      "Can I ask you something special? 💞",
+      "Will you be my Valentine? ❤️"
+    ];
+
+    let step = 0;
+
+    /* 🎯 ROTATE CHARACTER WITH CURSOR */
+    document.addEventListener("mousemove", (e) => {
+      const r = character.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const angle = Math.atan2(dy, dx) * 57.3;
+      character.style.transform =
+        "translate(-50%, -50%) rotate(" + angle + "deg)";
+    });
+
+    /* ❤️ YES CLICK */
+    yesBtn.addEventListener("click", () => {
+      spawnLove();
+
+      if (step < questions.length - 1) {
+        step++;
+        question.innerText = questions[step];
+      } else {
+        endCelebration();
+      }
+    });
+
+    /* 🔫 NO CLICK → SHOOT ONCE */
+    noBtn.addEventListener("mouseenter", shootNo);
+
+    function shootNo() {
+      const cr = character.getBoundingClientRect();
+      const nr = noBtn.getBoundingClientRect();
+
+      const startX = cr.left + cr.width * 0.6;
+      const startY = cr.top + cr.height * 0.5;
+
+      const targetX = nr.left + nr.width / 2;
+      const targetY = nr.top + nr.height / 2;
+
+      bullet.style.left = startX + "px";
+      bullet.style.top = startY + "px";
+      bullet.style.display = "block";
+
+      bullet.animate(
+        [
+          { transform: "translate(0,0)" },
+          { transform: `translate(${targetX - startX}px, ${targetY - startY}px)` }
+        ],
+        { duration: 550, easing: "linear" }
+      );
+
+      noBtn.style.pointerEvents = "none";
+
+      setTimeout(() => {
+        bullet.style.display = "none";
+        breakHeart(targetX, targetY);
+        respawnNo();
+      }, 550);
+    }
+
+    /* ♻️ RESPAWN NO ON RIGHT SIDE */
+    function respawnNo() {
+      const minX = window.innerWidth / 2 + 80;
+      const maxX = window.innerWidth - 160;
+      const x = Math.random() * (maxX - minX) + minX;
+      const y = Math.random() * (window.innerHeight - 200) + 100;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.display = "block";
+      noBtn.style.pointerEvents = "auto";
+    }
+
+    /* 💔 HEART BREAK */
+    function breakHeart(x, y) {
+      for (let i = 0; i < 7; i++) {
+        const h = document.createElement("div");
+        h.className = "broken-heart";
+        h.innerHTML = "💔";
+        h.style.left = x + Math.random() * 30 + "px";
+        h.style.top = y + Math.random() * 30 + "px";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 1200);
+      }
+    }
+
+    /* ❤️ LOVE HEARTS */
+    function spawnLove() {
+      for (let i = 0; i < 10; i++) {
+        const h = document.createElement("div");
+        h.className = "love-heart";
+        h.innerHTML = "❤️";
+        h.style.left = Math.random() * window.innerWidth + "px";
+        h.style.top = "70%";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 2000);
+      }
+    }
+
+    /* 🎉 FINAL CELEBRATION */
+    function endCelebration() {
+      question.style.display = "none";
+      buttons.style.display = "none";
+      finalText.style.display = "block";
+      spawnLove();
+      spawnLove();
+    }
+
+    /* INITIAL NO POSITION */
+    respawnNo();
+  </script>
+
+</body>
+</html>
