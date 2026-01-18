@@ -2,8 +2,6 @@
 <html>
 <head>
   <title>Valentine 💖</title>
-
-  <!-- ✅ REQUIRED FOR MOBILE SCALING -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -30,7 +28,6 @@
       position: relative;
     }
 
-    /* 🔵 RESPONSIVE BUTTONS */
     .circle-btn {
       width: clamp(90px, 22vw, 120px);
       height: clamp(90px, 22vw, 120px);
@@ -39,7 +36,6 @@
       font-size: clamp(18px, 5vw, 24px);
       cursor: pointer;
       margin: 0 5vw;
-      transition: transform 0.2s ease;
     }
 
     #yesBtn {
@@ -55,13 +51,12 @@
       position: fixed;
     }
 
-    /* 🎯 CHARACTER RESPONSIVE CENTER */
     #character {
       width: clamp(150px, 35vw, 220px);
       position: fixed;
       left: 50%;
       top: 55%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) rotate(0deg);
       transform-origin: center center;
       pointer-events: none;
       transition: transform 0.12s linear;
@@ -104,170 +99,177 @@
       margin-top: 10vh;
       font-size: clamp(28px, 8vw, 48px);
       color: #c7004c;
-      padding: 0 10px;
     }
   </style>
 </head>
 
 <body>
 
-  <h1 id="question">Do you like surprises? 💕</h1>
+<h1 id="question">Do you like surprises? 💕</h1>
 
-  <div class="buttons" id="buttons">
-    <button id="yesBtn" class="circle-btn">YES</button>
-    <button id="noBtn" class="circle-btn">NO</button>
-  </div>
+<div class="buttons" id="buttons">
+  <button id="yesBtn" class="circle-btn">YES</button>
+  <button id="noBtn" class="circle-btn">NO</button>
+</div>
 
-  <div id="final">Happy Valentine’s Day 💖💐</div>
+<div id="final">Happy Valentine’s Day 💖💐</div>
 
-  <img id="character" src="character.png">
-  <img id="bullet" src="bullet.png">
+<img id="character" src="character.png">
+<img id="bullet" src="bullet.png">
 
-  <script>
-    const character = document.getElementById("character");
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const bullet = document.getElementById("bullet");
-    const question = document.getElementById("question");
-    const buttons = document.getElementById("buttons");
-    const finalText = document.getElementById("final");
+<script>
+const character = document.getElementById("character");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const bullet = document.getElementById("bullet");
+const question = document.getElementById("question");
+const buttons = document.getElementById("buttons");
+const finalText = document.getElementById("final");
 
-    const questions = [
-      "Do you like surprises? 💕",
-      "Do you believe in love? 💖",
-      "Do you trust me? 💗",
-      "Can I ask you something special? 💞",
-      "Will you be my Valentine? ❤️"
-    ];
+const DEFAULT_ANGLE = 0;
 
-    let step = 0;
+const questions = [
+  "Do you like surprises? 💕",
+  "Do you believe in love? 💖",
+  "Do you trust me? 💗",
+  "Can I ask you something special? 💞",
+  "Will you be my Valentine? ❤️"
+];
 
-    /* 🎯 ROTATE CHARACTER (MOUSE ONLY) */
-    document.addEventListener("mousemove", (e) => {
-      if (isTouchDevice) return;
-      rotateCharacter(e.clientX, e.clientY);
-    });
+let step = 0;
 
-    /* 📱 ROTATE CHARACTER (TOUCH) */
-    document.addEventListener("touchmove", (e) => {
-      const touch = e.touches[0];
-      rotateCharacter(touch.clientX, touch.clientY);
-    });
+const isTouchDevice =
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    function rotateCharacter(x, y) {
-      const r = character.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const angle = Math.atan2(y - cy, x - cx) * 57.3;
-      character.style.transform =
-        "translate(-50%, -50%) rotate(" + angle + "deg)";
-    }
+/* 🔄 RESET CHARACTER */
+function resetCharacter() {
+  character.style.transform =
+    "translate(-50%, -50%) rotate(" + DEFAULT_ANGLE + "deg)";
+}
 
-    /* ❤️ YES CLICK */
-    yesBtn.addEventListener("click", () => {
-      spawnLove();
-      if (step < questions.length - 1) {
-        step++;
-        question.innerText = questions[step];
-      } else {
-        endCelebration();
-      }
-    });
+/* 🖥 PC ROTATE WITH MOUSE */
+document.addEventListener("mousemove", (e) => {
+  if (isTouchDevice) return;
+  rotateToPoint(e.clientX, e.clientY, true);
+});
 
-    /* 📱🖥 DEVICE DETECTION */
-    const isTouchDevice =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
+/* 📱 PHONE ROTATE INSTANTLY */
+function rotateToPoint(x, y, smooth) {
+  const r = character.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  const angle = Math.atan2(y - cy, x - cx) * 57.3;
 
-    if (isTouchDevice) {
-      noBtn.addEventListener("touchstart", shootNo);
-    } else {
-      noBtn.addEventListener("mouseenter", shootNo);
-    }
+  character.style.transition = smooth ? "transform 0.12s linear" : "none";
+  character.style.transform =
+    "translate(-50%, -50%) rotate(" + angle + "deg)";
+}
 
-    /* 🔫 SHOOT */
-    function shootNo(e) {
-      e?.preventDefault?.();
+/* ❤️ YES */
+yesBtn.addEventListener("click", () => {
+  spawnLove();
+  resetCharacter();
 
-      const cr = character.getBoundingClientRect();
-      const nr = noBtn.getBoundingClientRect();
+  if (step < questions.length - 1) {
+    step++;
+    question.innerText = questions[step];
+  } else {
+    endCelebration();
+  }
+});
 
-      const startX = cr.left + cr.width * 0.6;
-      const startY = cr.top + cr.height * 0.5;
+/* 🔫 NO */
+if (isTouchDevice) {
+  noBtn.addEventListener("touchstart", shootNo);
+} else {
+  noBtn.addEventListener("mouseenter", shootNo);
+}
 
-      const targetX = nr.left + nr.width / 2;
-      const targetY = nr.top + nr.height / 2;
+function shootNo(e) {
+  e?.preventDefault?.();
 
-      bullet.style.left = startX + "px";
-      bullet.style.top = startY + "px";
-      bullet.style.display = "block";
+  const cr = character.getBoundingClientRect();
+  const nr = noBtn.getBoundingClientRect();
 
-      bullet.animate(
-        [
-          { transform: "translate(0,0)" },
-          { transform: `translate(${targetX - startX}px, ${targetY - startY}px)` }
-        ],
-        { duration: 550, easing: "linear" }
-      );
+  const targetX = nr.left + nr.width / 2;
+  const targetY = nr.top + nr.height / 2;
 
-      noBtn.style.pointerEvents = "none";
+  rotateToPoint(targetX, targetY, !isTouchDevice);
 
-      setTimeout(() => {
-        bullet.style.display = "none";
-        breakHeart(targetX, targetY);
-        respawnNo();
-      }, 550);
-    }
+  const gunX = cr.left + cr.width * 0.75;
+  const gunY = cr.top + cr.height * 0.55;
 
-    /* ♻️ RESPAWN NO (RIGHT SIDE) */
-    function respawnNo() {
-      const minX = window.innerWidth / 2 + 60;
-      const maxX = window.innerWidth - 140;
-      const x = Math.random() * (maxX - minX) + minX;
-      const y = Math.random() * (window.innerHeight - 180) + 100;
+  bullet.style.left = gunX + "px";
+  bullet.style.top = gunY + "px";
+  bullet.style.display = "block";
+  bullet.style.transform = "rotate(0deg)";
 
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-      noBtn.style.display = "block";
-      noBtn.style.pointerEvents = "auto";
-    }
+  bullet.animate(
+    [
+      { transform: "translate(0,0)" },
+      { transform: `translate(${targetX - gunX}px, ${targetY - gunY}px)` }
+    ],
+    { duration: 550, easing: "linear" }
+  );
 
-    /* 💔 HEART BREAK */
-    function breakHeart(x, y) {
-      for (let i = 0; i < 7; i++) {
-        const h = document.createElement("div");
-        h.className = "broken-heart";
-        h.innerHTML = "💔";
-        h.style.left = x + Math.random() * 30 + "px";
-        h.style.top = y + Math.random() * 30 + "px";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 1200);
-      }
-    }
+  noBtn.style.pointerEvents = "none";
 
-    /* ❤️ LOVE HEARTS */
-    function spawnLove() {
-      for (let i = 0; i < 10; i++) {
-        const h = document.createElement("div");
-        h.className = "love-heart";
-        h.innerHTML = "❤️";
-        h.style.left = Math.random() * window.innerWidth + "px";
-        h.style.top = "70%";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 2000);
-      }
-    }
-
-    /* 🎉 FINAL */
-    function endCelebration() {
-      question.style.display = "none";
-      buttons.style.display = "none";
-      finalText.style.display = "block";
-      spawnLove();
-      spawnLove();
-    }
-
+  setTimeout(() => {
+    bullet.style.display = "none";
+    breakHeart(targetX, targetY);
     respawnNo();
-  </script>
+  }, 550);
+}
+
+/* ♻️ RESPAWN NO */
+function respawnNo() {
+  const minX = window.innerWidth / 2 + 60;
+  const maxX = window.innerWidth - 140;
+  noBtn.style.left =
+    Math.random() * (maxX - minX) + minX + "px";
+  noBtn.style.top =
+    Math.random() * (window.innerHeight - 180) + 100 + "px";
+  noBtn.style.pointerEvents = "auto";
+}
+
+/* 💔 */
+function breakHeart(x, y) {
+  for (let i = 0; i < 7; i++) {
+    const h = document.createElement("div");
+    h.className = "broken-heart";
+    h.innerHTML = "💔";
+    h.style.left = x + Math.random() * 30 + "px";
+    h.style.top = y + Math.random() * 30 + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+}
+
+/* ❤️ */
+function spawnLove() {
+  for (let i = 0; i < 10; i++) {
+    const h = document.createElement("div");
+    h.className = "love-heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.top = "70%";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 2000);
+  }
+}
+
+/* 🎉 */
+function endCelebration() {
+  question.style.display = "none";
+  buttons.style.display = "none";
+  finalText.style.display = "block";
+  spawnLove();
+  spawnLove();
+}
+
+respawnNo();
+resetCharacter();
+</script>
 
 </body>
 </html>
