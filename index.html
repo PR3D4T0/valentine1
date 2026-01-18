@@ -20,10 +20,12 @@
       margin-top: 4vh;
       font-size: clamp(26px, 6vw, 42px);
       color: #c7004c;
+      padding: 0 10px;
     }
 
     .buttons {
       margin-top: 6vh;
+      position: relative;
     }
 
     .circle-btn {
@@ -39,6 +41,7 @@
     #yesBtn {
       background: #ff5c8a;
       color: white;
+      box-shadow: 0 6px 15px rgba(255,92,138,0.4);
     }
 
     #noBtn {
@@ -53,32 +56,43 @@
       position: fixed;
       left: 50%;
       top: 55%;
-      transform: translate(-50%, -50%);
-      transition: transform 0.12s linear;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: center center;
       pointer-events: none;
+      transition: transform 0.12s linear;
       z-index: 5;
     }
 
+    /* 🔫 BULLET — UPDATED SIZE */
     #bullet {
       position: fixed;
-      width: 32px;
+      width: clamp(24px, 6.5vw, 34px);
       display: none;
       z-index: 10;
     }
 
-    #muzzle {
+    .broken-heart {
       position: fixed;
-      width: 16px;
-      height: 16px;
-      background: radial-gradient(circle, #fff, #ff9, transparent);
-      border-radius: 50%;
-      display: none;
-      z-index: 11;
-      animation: flash 120ms ease-out;
+      font-size: clamp(20px, 6vw, 26px);
+      animation: break 1.2s ease forwards;
+      pointer-events: none;
     }
 
-    @keyframes flash {
-      to { transform: scale(1.6); opacity: 0; }
+    .love-heart {
+      position: fixed;
+      font-size: clamp(18px, 5vw, 24px);
+      animation: floatUp 2s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes break {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(120px) scale(0.3); }
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-150px); }
     }
 
     #final {
@@ -103,17 +117,17 @@
 
 <img id="character" src="character.png">
 <img id="bullet" src="bullet.png">
-<div id="muzzle"></div>
 
 <script>
 const character = document.getElementById("character");
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const bullet = document.getElementById("bullet");
-const muzzle = document.getElementById("muzzle");
 const question = document.getElementById("question");
 const buttons = document.getElementById("buttons");
 const finalText = document.getElementById("final");
+
+const DEFAULT_ANGLE = 0;
 
 const questions = [
   "Do you like surprises? 💕",
@@ -124,33 +138,53 @@ const questions = [
 ];
 
 let step = 0;
-const isTouch = 'ontouchstart' in window;
 
-/* ROTATE CHARACTER */
-function rotateCharacter(tx, ty) {
-  const cr = character.getBoundingClientRect();
-  const cx = cr.left + cr.width / 2;
-  const cy = cr.top + cr.height / 2;
-  const angle = Math.atan2(ty - cy, tx - cx) * 57.3;
+const isTouchDevice =
+  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+/* 🔄 RESET CHARACTER */
+function resetCharacter() {
   character.style.transform =
-    `translate(-50%, -50%) rotate(${angle}deg)`;
-  return angle;
+    "translate(-50%, -50%) rotate(" + DEFAULT_ANGLE + "deg)";
 }
 
-/* YES */
-yesBtn.onclick = () => {
-  if (++step < questions.length) {
-    question.innerText = questions[step];
-    character.style.transform = "translate(-50%, -50%)";
-  } else {
-    question.style.display = "none";
-    buttons.style.display = "none";
-    finalText.style.display = "block";
-  }
-};
+/* 🖥 PC ROTATE */
+document.addEventListener("mousemove", (e) => {
+  if (isTouchDevice) return;
+  rotateToPoint(e.clientX, e.clientY, true);
+});
 
-/* NO SHOOT */
-noBtn.addEventListener(isTouch ? "touchstart" : "mouseenter", shootNo);
+/* ROTATE FUNCTION */
+function rotateToPoint(x, y, smooth) {
+  const r = character.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  const angle = Math.atan2(y - cy, x - cx) * 57.3;
+
+  character.style.transition = smooth ? "transform 0.12s linear" : "none";
+  character.style.transform =
+    "translate(-50%, -50%) rotate(" + angle + "deg)";
+}
+
+/* ❤️ YES */
+yesBtn.addEventListener("click", () => {
+  spawnLove();
+  resetCharacter();
+
+  if (step < questions.length - 1) {
+    step++;
+    question.innerText = questions[step];
+  } else {
+    endCelebration();
+  }
+});
+
+/* 🔫 NO */
+if (isTouchDevice) {
+  noBtn.addEventListener("touchstart", shootNo);
+} else {
+  noBtn.addEventListener("mouseenter", shootNo);
+}
 
 function shootNo(e) {
   e?.preventDefault?.();
@@ -158,49 +192,87 @@ function shootNo(e) {
   const cr = character.getBoundingClientRect();
   const nr = noBtn.getBoundingClientRect();
 
-  const gunX = cr.left + cr.width * 0.75;
-  const gunY = cr.top + cr.height * 0.55;
-
   const targetX = nr.left + nr.width / 2;
   const targetY = nr.top + nr.height / 2;
 
-  const angle = rotateCharacter(targetX, targetY);
+  rotateToPoint(targetX, targetY, !isTouchDevice);
 
-  /* MUZZLE */
-  muzzle.style.left = gunX + "px";
-  muzzle.style.top = gunY + "px";
-  muzzle.style.display = "block";
-  setTimeout(() => muzzle.style.display = "none", 120);
+  /* 🎯 GUN BARREL POSITION */
+  const gunX = cr.left + cr.width * 0.78;
+  const gunY = cr.top + cr.height * 0.55;
 
-  /* BULLET (OLD LOGIC) */
   bullet.style.left = gunX + "px";
   bullet.style.top = gunY + "px";
-  bullet.style.transform = `rotate(${angle}deg)`;
   bullet.style.display = "block";
+  bullet.style.transform = "rotate(0deg)";
+
+  bullet.offsetHeight; // 👈 ensure visible at barrel
 
   bullet.animate(
     [
-      { transform: `rotate(${angle}deg) translate(0,0)` },
-      { transform: `rotate(${angle}deg) translate(${targetX - gunX}px, ${targetY - gunY}px)` }
+      { transform: "translate(0,0)" },
+      { transform: `translate(${targetX - gunX}px, ${targetY - gunY}px)` }
     ],
-    { duration: 200, easing: "linear" }
+    { duration: 180, easing: "linear" } // ⚡ FAST BULLET
   );
+
+  noBtn.style.pointerEvents = "none";
 
   setTimeout(() => {
     bullet.style.display = "none";
+    breakHeart(targetX, targetY);
     respawnNo();
-  }, 200);
+  }, 180);
 }
 
-/* RESPAWN NO */
+/* ♻️ RESPAWN NO */
 function respawnNo() {
+  const minX = window.innerWidth / 2 + 60;
+  const maxX = window.innerWidth - 140;
   noBtn.style.left =
-    Math.random() * (window.innerWidth / 2) + window.innerWidth / 2 + "px";
+    Math.random() * (maxX - minX) + minX + "px";
   noBtn.style.top =
-    Math.random() * (window.innerHeight - 200) + 100 + "px";
+    Math.random() * (window.innerHeight - 180) + 100 + "px";
+  noBtn.style.pointerEvents = "auto";
+}
+
+/* 💔 */
+function breakHeart(x, y) {
+  for (let i = 0; i < 7; i++) {
+    const h = document.createElement("div");
+    h.className = "broken-heart";
+    h.innerHTML = "💔";
+    h.style.left = x + Math.random() * 30 + "px";
+    h.style.top = y + Math.random() * 30 + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+}
+
+/* ❤️ */
+function spawnLove() {
+  for (let i = 0; i < 10; i++) {
+    const h = document.createElement("div");
+    h.className = "love-heart";
+    h.innerHTML = "❤️";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.top = "70%";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 2000);
+  }
+}
+
+/* 🎉 */
+function endCelebration() {
+  question.style.display = "none";
+  buttons.style.display = "none";
+  finalText.style.display = "block";
+  spawnLove();
+  spawnLove();
 }
 
 respawnNo();
+resetCharacter();
 </script>
 
 </body>
