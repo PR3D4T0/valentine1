@@ -63,9 +63,10 @@
       z-index: 5;
     }
 
+    /* 🔫 BULLET — UPDATED SIZE */
     #bullet {
       position: fixed;
-      width: clamp(18px, 5vw, 25px);
+      width: clamp(24px, 6.5vw, 34px);
       display: none;
       z-index: 10;
     }
@@ -147,13 +148,13 @@ function resetCharacter() {
     "translate(-50%, -50%) rotate(" + DEFAULT_ANGLE + "deg)";
 }
 
-/* 🖥 PC ROTATE WITH MOUSE */
+/* 🖥 PC ROTATE */
 document.addEventListener("mousemove", (e) => {
   if (isTouchDevice) return;
   rotateToPoint(e.clientX, e.clientY, true);
 });
 
-/* 📱 PHONE ROTATE INSTANTLY */
+/* ROTATE FUNCTION */
 function rotateToPoint(x, y, smooth) {
   const r = character.getBoundingClientRect();
   const cx = r.left + r.width / 2;
@@ -196,7 +197,8 @@ function shootNo(e) {
 
   rotateToPoint(targetX, targetY, !isTouchDevice);
 
-  const gunX = cr.left + cr.width * 0.75;
+  /* 🎯 GUN BARREL POSITION */
+  const gunX = cr.left + cr.width * 0.78;
   const gunY = cr.top + cr.height * 0.55;
 
   bullet.style.left = gunX + "px";
@@ -204,12 +206,14 @@ function shootNo(e) {
   bullet.style.display = "block";
   bullet.style.transform = "rotate(0deg)";
 
+  bullet.offsetHeight; // 👈 ensure visible at barrel
+
   bullet.animate(
     [
       { transform: "translate(0,0)" },
       { transform: `translate(${targetX - gunX}px, ${targetY - gunY}px)` }
     ],
-    { duration: 550, easing: "linear" }
+    { duration: 180, easing: "linear" } // ⚡ FAST BULLET
   );
 
   noBtn.style.pointerEvents = "none";
@@ -218,7 +222,7 @@ function shootNo(e) {
     bullet.style.display = "none";
     breakHeart(targetX, targetY);
     respawnNo();
-  }, 550);
+  }, 180);
 }
 
 /* ♻️ RESPAWN NO */
