@@ -24,7 +24,6 @@
 
     .buttons {
       margin-top: 6vh;
-      position: relative;
     }
 
     .circle-btn {
@@ -40,7 +39,6 @@
     #yesBtn {
       background: #ff5c8a;
       color: white;
-      box-shadow: 0 6px 15px rgba(255,92,138,0.4);
     }
 
     #noBtn {
@@ -55,22 +53,19 @@
       position: fixed;
       left: 50%;
       top: 55%;
-      transform: translate(-50%, -50%) rotate(0deg);
-      pointer-events: none;
+      transform: translate(-50%, -50%);
       transition: transform 0.12s linear;
+      pointer-events: none;
       z-index: 5;
     }
 
-    /* 🔫 BULLET */
     #bullet {
       position: fixed;
-      width: clamp(24px, 6.5vw, 34px);
+      width: 32px;
       display: none;
       z-index: 10;
-      transform-origin: center center;
     }
 
-    /* 🔥 MUZZLE FLASH */
     #muzzle {
       position: fixed;
       width: 16px;
@@ -83,19 +78,7 @@
     }
 
     @keyframes flash {
-      0% { transform: scale(0.5); opacity: 1; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
-
-    .broken-heart {
-      position: fixed;
-      font-size: 24px;
-      animation: break 1.2s ease forwards;
-      pointer-events: none;
-    }
-
-    @keyframes break {
-      to { opacity: 0; transform: translateY(120px) scale(0.3); }
+      to { transform: scale(1.6); opacity: 0; }
     }
 
     #final {
@@ -141,16 +124,14 @@ const questions = [
 ];
 
 let step = 0;
-
-const isTouch =
-  'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isTouch = 'ontouchstart' in window;
 
 /* ROTATE CHARACTER */
-function rotateTo(x, y) {
-  const r = character.getBoundingClientRect();
-  const cx = r.left + r.width / 2;
-  const cy = r.top + r.height / 2;
-  const angle = Math.atan2(y - cy, x - cx) * 57.3;
+function rotateCharacter(tx, ty) {
+  const cr = character.getBoundingClientRect();
+  const cx = cr.left + cr.width / 2;
+  const cy = cr.top + cr.height / 2;
+  const angle = Math.atan2(ty - cy, tx - cx) * 57.3;
   character.style.transform =
     `translate(-50%, -50%) rotate(${angle}deg)`;
   return angle;
@@ -160,7 +141,7 @@ function rotateTo(x, y) {
 yesBtn.onclick = () => {
   if (++step < questions.length) {
     question.innerText = questions[step];
-    character.style.transform = "translate(-50%, -50%) rotate(0deg)";
+    character.style.transform = "translate(-50%, -50%)";
   } else {
     question.style.display = "none";
     buttons.style.display = "none";
@@ -168,55 +149,55 @@ yesBtn.onclick = () => {
   }
 };
 
-/* NO */
-(isTouch ? "touchstart" : "mouseenter")
-&& noBtn.addEventListener(isTouch ? "touchstart" : "mouseenter", shoot);
+/* NO SHOOT */
+noBtn.addEventListener(isTouch ? "touchstart" : "mouseenter", shootNo);
 
-function shoot(e) {
+function shootNo(e) {
   e?.preventDefault?.();
 
   const cr = character.getBoundingClientRect();
   const nr = noBtn.getBoundingClientRect();
 
-  const gunX = cr.left + cr.width * 0.78;
+  const gunX = cr.left + cr.width * 0.75;
   const gunY = cr.top + cr.height * 0.55;
 
   const targetX = nr.left + nr.width / 2;
   const targetY = nr.top + nr.height / 2;
 
-  const angle = Math.atan2(targetY - gunY, targetX - gunX) * 57.3;
-  rotateTo(targetX, targetY);
+  const angle = rotateCharacter(targetX, targetY);
 
-  /* MUZZLE FLASH */
+  /* MUZZLE */
   muzzle.style.left = gunX + "px";
   muzzle.style.top = gunY + "px";
   muzzle.style.display = "block";
   setTimeout(() => muzzle.style.display = "none", 120);
 
-  /* BULLET */
+  /* BULLET (OLD LOGIC) */
   bullet.style.left = gunX + "px";
   bullet.style.top = gunY + "px";
-  bullet.style.display = "block";
   bullet.style.transform = `rotate(${angle}deg)`;
+  bullet.style.display = "block";
 
   bullet.animate(
     [
       { transform: `rotate(${angle}deg) translate(0,0)` },
       { transform: `rotate(${angle}deg) translate(${targetX - gunX}px, ${targetY - gunY}px)` }
     ],
-    { duration: 180, easing: "linear" }
+    { duration: 200, easing: "linear" }
   );
 
   setTimeout(() => {
     bullet.style.display = "none";
     respawnNo();
-  }, 180);
+  }, 200);
 }
 
 /* RESPAWN NO */
 function respawnNo() {
-  noBtn.style.left = (Math.random() * (window.innerWidth / 2) + window.innerWidth / 2) + "px";
-  noBtn.style.top = (Math.random() * (window.innerHeight - 200) + 100) + "px";
+  noBtn.style.left =
+    Math.random() * (window.innerWidth / 2) + window.innerWidth / 2 + "px";
+  noBtn.style.top =
+    Math.random() * (window.innerHeight - 200) + 100 + "px";
 }
 
 respawnNo();
