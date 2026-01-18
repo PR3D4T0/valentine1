@@ -63,12 +63,13 @@
       z-index: 5;
     }
 
-    /* 🔫 BULLET — UPDATED SIZE */
+    /* 🔫 BULLET */
     #bullet {
       position: fixed;
       width: clamp(24px, 6.5vw, 34px);
       display: none;
       z-index: 10;
+      transform-origin: center center;
     }
 
     .broken-heart {
@@ -154,7 +155,7 @@ document.addEventListener("mousemove", (e) => {
   rotateToPoint(e.clientX, e.clientY, true);
 });
 
-/* ROTATE FUNCTION */
+/* ROTATE CHARACTER */
 function rotateToPoint(x, y, smooth) {
   const r = character.getBoundingClientRect();
   const cx = r.left + r.width / 2;
@@ -195,25 +196,30 @@ function shootNo(e) {
   const targetX = nr.left + nr.width / 2;
   const targetY = nr.top + nr.height / 2;
 
+  /* 🔥 ANGLE CALCULATION */
+  const dx = targetX - (cr.left + cr.width * 0.78);
+  const dy = targetY - (cr.top + cr.height * 0.55);
+  const bulletAngle = Math.atan2(dy, dx) * 57.3;
+
   rotateToPoint(targetX, targetY, !isTouchDevice);
 
-  /* 🎯 GUN BARREL POSITION */
+  /* 🎯 GUN BARREL */
   const gunX = cr.left + cr.width * 0.78;
   const gunY = cr.top + cr.height * 0.55;
 
   bullet.style.left = gunX + "px";
   bullet.style.top = gunY + "px";
   bullet.style.display = "block";
-  bullet.style.transform = "rotate(0deg)";
+  bullet.style.transform = `rotate(${bulletAngle}deg)`;
 
-  bullet.offsetHeight; // 👈 ensure visible at barrel
+  bullet.offsetHeight; // ensure visible at barrel
 
   bullet.animate(
     [
-      { transform: "translate(0,0)" },
-      { transform: `translate(${targetX - gunX}px, ${targetY - gunY}px)` }
+      { transform: `rotate(${bulletAngle}deg) translate(0,0)` },
+      { transform: `rotate(${bulletAngle}deg) translate(${targetX - gunX}px, ${targetY - gunY}px)` }
     ],
-    { duration: 180, easing: "linear" } // ⚡ FAST BULLET
+    { duration: 180, easing: "linear" }
   );
 
   noBtn.style.pointerEvents = "none";
