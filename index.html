@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Valentine 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+
+    :root {
+      --primary-pink: #ff5c8a;
+      --dark-pink: #c7004c;
+      --light-pink: #ffe6ee;
+      --rose-pink: #ffafcc;
+      --soft-pink: #ffc2d1;
+      --gold: #ffd166;
+      --sparkle: rgba(255, 255, 255, 0.8);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      background: linear-gradient(135deg, var(--light-pink) 0%, var(--soft-pink) 50%, var(--rose-pink) 100%);
+      font-family: 'Dancing Script', cursive, 'Pacifico', cursive;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      height: -webkit-fill-available;
+    }
+
+    /* Animated floating hearts background */
+    .floating-hearts {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 20px;
+      opacity: 0.4;
+      animation: floatAround 15s infinite linear;
+    }
+
+    @keyframes floatAround {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Sparkles */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: var(--sparkle);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkleTwinkle 2s infinite alternate;
+    }
+
+    @keyframes sparkleTwinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Main content */
+    .container {
+      position: relative;
+      z-index: 10;
+      padding-top: 4vh;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 80px; /* Space for instructions */
+    }
+
+    h1 {
+      margin-top: 5vh;
+      font-size: clamp(28px, 7vw, 52px);
+      color: var(--dark-pink);
+      padding: 0 20px;
+      text-shadow: 2px 2px 4px rgba(199, 0, 76, 0.2);
+      font-family: 'Great Vibes', cursive;
+      animation: gentlePulse 3s infinite alternate;
+      position: relative;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    @keyframes gentlePulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.03); }
+    }
+
+    .buttons {
+      margin-top: 8vh;
+      position: relative;
+      display: flex;
+      gap: clamp(20px, 8vw, 60px);
+      z-index: 15;
+    }
+
+    .circle-btn {
+      width: clamp(100px, 25vw, 140px);
+      height: clamp(100px, 25vw, 140px);
+      border-radius: 50%;
+      border: none;
+      font-size: clamp(20px, 5.5vw, 28px);
+      cursor: pointer;
+      font-family: 'Pacifico', cursive;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      z-index: 30;
+    }
+
+    .circle-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 1%, transparent 20%);
+      pointer-events: none;
+    }
+
+    #yesBtn {
+      background: linear-gradient(145deg, var(--primary-pink), var(--dark-pink));
+      color: white;
+      box-shadow: 0 8px 25px rgba(255, 92, 138, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #yesBtn:hover, #yesBtn:active {
+      transform: scale(1.1);
+      box-shadow: 0 12px 30px rgba(255, 92, 138, 0.7);
+    }
+
+    /* NO button - FIXED for Android/mobile */
+    #noBtn {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 248, 248, 0.8));
+      color: var(--dark-pink);
+      border: 3px solid var(--primary-pink);
+      position: fixed;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  all 0.3s ease;
+      z-index: 35;
+      /* Prevent button from going off-screen */
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    #noBtn:hover, #noBtn:active {
+      box-shadow: 0 8px 25px rgba(199, 0, 76, 0.3);
+      background: linear-gradient(145deg, rgba(255, 245, 248, 0.95), rgba(255, 238, 242, 0.85));
+    }
+
+    /* Character */
+    #character {
+      width: clamp(160px, 38vw, 250px);
+      position: fixed;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: center center;
+      pointer-events: none;
+      transition: transform 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 15;
+      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+    }
+
+    /* Enhanced bullet */
+    #bullet {
+      position: fixed;
+      width: clamp(28px, 7vw, 40px);
+      display: none;
+      z-index: 40;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+      transition: transform 0.1s linear;
+    }
+
+    /* Broken hearts */
+    .broken-heart {
+      position: fixed;
+      font-size: clamp(24px, 6.5vw, 32px);
+      animation: break 1.4s ease forwards;
+      pointer-events: none;
+      z-index: 10;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    }
+
+    @keyframes break {
+      0% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+      30% { transform: translateY(-30px) scale(1.3) rotate(-15deg); }
+      100% { opacity: 0; transform: translateY(100px) scale(0.2) rotate(45deg); }
+    }
+
+    /* Love hearts */
+    .love-heart {
+      position: fixed;
+      font-size: clamp(22px, 5.5vw, 30px);
+      animation: floatLove 2.5s ease-out forwards;
+      pointer-events: none;
+      z-index: 10;
+      text-shadow: 0 3px 6px rgba(255, 92, 138, 0.4);
+    }
+
+    @keyframes floatLove {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      50% { opacity: 0.9; transform: translateY(-80px) scale(1.3); }
+      100% { opacity: 0; transform: translateY(-180px) scale(0.8); }
+    }
+
+    /* Final message with glass effect */
+    #final {
+      display: none;
+      margin-top: 15vh;
+      font-size: clamp(32px, 9vw, 56px);
+      color: var(--dark-pink);
+      text-shadow: 3px 3px 8px rgba(199, 0, 76, 0.2);
+      font-family: 'Great Vibes', cursive;
+      animation: finalPulse 2s infinite alternate;
+      position: relative;
+      z-index: 50;
+      padding: 25px 35px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 25px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      max-width: 85%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes finalPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* Instructions */
+    .instructions {
+      position: fixed;
+      bottom: 25px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: var(--dark-pink);
+      font-size: clamp(15px, 3.5vw, 20px);
+      opacity: 0.85;
+      z-index: 20;
+      font-family: 'Pacifico', cursive;
+      padding: 0 15px;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+      /* Safe area for mobile */
+      padding-bottom: env(safe-area-inset-bottom, 15px);
+    }
+
+    /* Confetti celebration */
+    .confetti {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background-color: var(--primary-pink);
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 5;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    .confetti:nth-child(2n) {
+      background-color: var(--gold);
+    }
+
+    .confetti:nth-child(3n) {
+      background-color: white;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Responsive adjustments for mobile */
+    @media (max-width: 768px) {
+      .buttons {
+        flex-direction: column;
+        gap: 40px;
+        margin-top: 10vh;
+      }
+      
+      #character {
+        top: 65%;
+        width: clamp(180px, 45vw, 240px);
+      }
+      
+      #noBtn {
+        position: fixed !important;
+        margin-top: 0;
+        /* Better mobile positioning */
+        width: clamp(100px, 25vw, 140px);
+        height: clamp(100px, 25vw, 140px);
+      }
+      
+      h1 {
+        margin-top: 8vh;
+        font-size: clamp(24px, 6vw, 40px);
+      }
+      
+      .instructions {
+        bottom: 20px;
+        font-size: clamp(14px, 3vw, 18px);
+        padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+      }
+      
+      .container {
+        padding-bottom: 100px; /* More space on mobile */
+      }
+    }
+
+    @media (max-height: 600px) {
+      #character {
+        top: 60%;
+        width: clamp(140px, 30vw, 200px);
+      }
+      
+      h1 {
+        margin-top: 4vh;
+        font-size: clamp(22px, 5vw, 32px);
+      }
+      
+      .buttons {
+        margin-top: 6vh;
+        gap: 25px;
+      }
+      
+      .instructions {
+        bottom: 15px;
+        font-size: clamp(12px, 2.5vw, 16px);
+      }
+      
+      #noBtn {
+        width: clamp(90px, 22vw, 120px);
+        height: clamp(90px, 22vw, 120px);
+        font-size: clamp(18px, 4.5vw, 24px);
+      }
+      
+      #yesBtn {
+        width: clamp(90px, 22vw, 120px);
+        height: clamp(90px, 22vw, 120px);
+        font-size: clamp(18px, 4.5vw, 24px);
+      }
+    }
+
+    /* Very small screens */
+    @media (max-width: 360px) {
+      h1 {
+        margin-top: 6vh;
+        font-size: clamp(20px, 5vw, 28px);
+      }
+      
+      .buttons {
+        gap: 30px;
+      }
+      
+      #character {
+        width: clamp(140px, 35vw, 180px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Background elements -->
+<div class="floating-hearts" id="floatingHearts"></div>
+
+<div class="container">
+  <h1 id="question">Do you like surprises? 💕</h1>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn" class="circle-btn">YES</button>
+    <button id="noBtn" class="circle-btn">NO</button>
+  </div>
+
+  <div id="final">Happy Valentine's Day 💖💐</div>
+
+  <img id="character" src="character.png" alt="Cute Valentine Character">
+  <img id="bullet" src="bullet.png" alt="Bullet">
+</div>
+
+<div class="instructions">
+  <p>💘 Click YES for love • Try to catch NO for fun 💘</p>
+</div>
+
+<!-- Audio Elements - REPLACE "YOUR_SONG_NAME_HERE.mp3" with your actual song file -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="YOUR_SONG_NAME_HERE.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="shootSound" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-gun-shot-1669.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="heartSound" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-happy-bell-alert-601.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="celebrationSound" preload="auto">
+  <source src="https://assets.mixkit.co/music/preview/mixkit-valentines-day-romantic-moment-286.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const character = document.getElementById("character");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const bullet = document.getElementById("bullet");
+const question = document.getElementById("question");
+const buttons = document.getElementById("buttons");
+const finalText = document.getElementById("final");
+const floatingHearts = document.getElementById("floatingHearts");
+
+// Audio elements
+const bgMusic = document.getElementById("bgMusic");
+const shootSound = document.getElementById("shootSound");
+const heartSound = document.getElementById("heartSound");
+const celebrationSound = document.getElementById("celebrationSound");
+
+// Initialize audio state
+let soundEnabled = true;
+let musicStarted = false;
+
+// Questions array
+const questions = [
+  "Do you like surprises? 💕",
+  "Do you believe in love? 💖",
+  "Do you trust me? 💗",
+  "Can I ask you something special? 💞",
+  "Will you be my Valentine? ❤️"
+];
+
+let step = 0;
+let floatingHeartsCreated = false;
+
+// Create floating background hearts
+function createFloatingHearts() {
+  if (floatingHeartsCreated) return;
+  
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("div");
+    heart.className = "floating-heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDelay = Math.random() * 15 + "s";
+    heart.style.fontSize = Math.random() * 15 + 15 + "px";
+    heart.style.opacity = Math.random() * 0.3 + 0.2;
+    floatingHearts.appendChild(heart);
+  }
+  floatingHeartsCreated = true;
+}
+
+// Create sparkles
+function createSparkles(x, y, count = 8) {
+  for (let i = 0; i < count; i++) {
+    const sparkle = document.createElement("div");
+    sparkle.className = "sparkle";
+    sparkle.style.left = x + Math.random() * 40 - 20 + "px";
+    sparkle.style.top = y + Math.random() * 40 - 20 + "px";
+    sparkle.style.animationDelay = Math.random() * 2 + "s";
+    document.body.appendChild(sparkle);
+    
+    setTimeout(() => {
+      sparkle.remove();
+    }, 2000);
+  }
+}
+
+// Audio play helper function with error handling
+function playAudio(audioElement) {
+  if (!soundEnabled) return;
+  
+  const playPromise = audioElement.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(error => {
+      console.log("Audio playback prevented:", error);
+      // Try to play on user interaction
+      document.addEventListener('click', () => {
+        audioElement.play().catch(e => console.log("Still prevented"));
+      }, { once: true });
+    });
+  }
+}
+
+// Start background music automatically when page loads
+function startMusic() {
+  if (!musicStarted) {
+    musicStarted = true;
+    // Set audio volumes
+    bgMusic.volume = 0.4;
+    shootSound.volume = 0.4;
+    heartSound.volume = 0.5;
+    celebrationSound.volume = 0.6;
+    
+    // Try to play background music
+    playAudio(bgMusic);
+    
+    // Fallback: if autoplay is blocked, play on first user interaction
+    const playOnInteraction = () => {
+      if (bgMusic.paused) {
+        playAudio(bgMusic);
+      }
+      document.removeEventListener('click', playOnInteraction);
+      document.removeEventListener('touchstart', playOnInteraction);
+    };
+    
+    document.addEventListener('click', playOnInteraction);
+    document.addEventListener('touchstart', playOnInteraction);
+  }
+}
+
+// Touch/mouse detection
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+/* 🔄 RESET CHARACTER */
+function resetCharacter() {
+  character.style.transition = "transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28)";
+  character.style.transform = "translate(-50%, -50%) rotate(0deg)";
+}
+
+/* 🖥 PC ROTATE */
+document.addEventListener("mousemove", (e) => {
+  if (isTouchDevice) return;
+  startMusic();
+  rotateToPoint(e.clientX, e.clientY, true);
+});
+
+/* 📱 TOUCH ROTATE */
+document.addEventListener("touchmove", (e) => {
+  if (!isTouchDevice) return;
+  e.preventDefault();
+  startMusic();
+  const touch = e.touches[0];
+  rotateToPoint(touch.clientX, touch.clientY, true);
+}, { passive: false });
+
+/* ROTATE FUNCTION */
+function rotateToPoint(x, y, smooth) {
+  const r = character.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  const angle = Math.atan2(y - cy, x - cx) * 57.3;
+
+  character.style.transition = smooth ? "transform 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.28)" : "none";
+  character.style.transform = "translate(-50%, -50%) rotate(" + angle + "deg)";
+  
+  // Add subtle sparkle effect when moving
+  if (smooth && Math.random() > 0.9) {
+    createSparkles(cx, cy, 2);
+  }
+}
+
+/* ❤️ YES - Enhanced */
+yesBtn.addEventListener("click", function() {
+  startMusic();
+  createFloatingHearts();
+  
+  // Button animation
+  this.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    this.style.transform = "scale(1)";
+  }, 100);
+  
+  // Play heart sound
+  if (soundEnabled) {
+    heartSound.currentTime = 0;
+    playAudio(heartSound);
+  }
+  
+  spawnLove();
+  createSparkles(yesBtn.offsetLeft + yesBtn.offsetWidth/2, yesBtn.offsetTop + yesBtn.offsetHeight/2, 12);
+  resetCharacter();
+
+  if (step < questions.length - 1) {
+    step++;
+    
+    // Smooth question transition
+    question.style.opacity = "0";
+    question.style.transform = "translateY(-10px)";
+    
+    setTimeout(() => {
+      question.innerText = questions[step];
+      question.style.opacity = "1";
+      question.style.transform = "translateY(0)";
+      question.style.transition = "all 0.3s ease";
+    }, 200);
+  } else {
+    endCelebration();
+  }
+});
+
+/* 🔫 NO - FIXED to work on both mobile and desktop */
+if (isTouchDevice) {
+  // Mobile: shoot on touch
+  noBtn.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    startMusic();
+    createFloatingHearts();
+    
+    const touch = e.touches[0];
+    shootNo({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      preventDefault: () => {}
+    });
+  });
+} else {
+  // Desktop: shoot on hover
+  noBtn.addEventListener("mouseenter", function(e) {
+    startMusic();
+    createFloatingHearts();
+    shootNo(e);
+  });
+}
+
+function shootNo(e) {
+  e?.preventDefault?.();
+  
+  // Play shoot sound
+  if (soundEnabled) {
+    shootSound.currentTime = 0;
+    playAudio(shootSound);
+  }
+  
+  const cr = character.getBoundingClientRect();
+  const nr = noBtn.getBoundingClientRect();
+
+  const targetX = nr.left + nr.width / 2;
+  const targetY = nr.top + nr.height / 2;
+
+  rotateToPoint(targetX, targetY, !isTouchDevice);
+
+  /* 🎯 GUN BARREL POSITION */
+  const gunX = cr.left + cr.width * 0.78;
+  const gunY = cr.top + cr.height * 0.55;
+
+  bullet.style.left = gunX + "px";
+  bullet.style.top = gunY + "px";
+  bullet.style.display = "block";
+  
+  // Rotate bullet to face target
+  const angle = Math.atan2(targetY - gunY, targetX - gunX) * 57.3;
+  bullet.style.transform = "rotate(" + angle + "deg)";
+
+  bullet.offsetHeight; // Force reflow
+
+  // Animate bullet
+  const bulletAnimation = bullet.animate(
+    [
+      { transform: "translate(0, 0) rotate(" + angle + "deg)" },
+      { transform: "translate(" + (targetX - gunX) + "px, " + (targetY - gunY) + "px) rotate(" + angle + "deg)" }
+    ],
+    { duration: 200, easing: "cubic-bezier(0.2, 0.8, 0.8, 1)" }
+  );
+
+  noBtn.style.pointerEvents = "none";
+  noBtn.style.transform = "scale(0.95)";
+
+  bulletAnimation.onfinish = () => {
+    bullet.style.display = "none";
+    breakHeart(targetX, targetY);
+    respawnNo();
+    noBtn.style.transform = "scale(1)";
+  };
+}
+
+/* ♻️ RESPAWN NO - FIXED for Android/mobile */
+function respawnNo() {
+  // Get button dimensions
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  
+  // Get viewport dimensions
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  
+  // Calculate safe margins (larger on mobile)
+  const safeMarginX = Math.max(20, vw * 0.05);
+  const safeMarginY = Math.max(20, vh * 0.05);
+  
+  // Get YES button position for reference
+  const yesRect = yesBtn.getBoundingClientRect();
+  
+  // Set boundaries
+  let minX = safeMarginX;
+  let maxX = vw - btnWidth - safeMarginX;
+  let minY = safeMarginY;
+  let maxY = vh - btnHeight - safeMarginY;
+  
+  // On mobile, ensure NO button doesn't overlap YES button
+  if (isTouchDevice) {
+    // Add extra margin below YES button
+    minY = Math.max(minY, yesRect.bottom + 40);
+    
+    // If YES button is at bottom, place NO button above
+    if (yesRect.bottom > vh * 0.7) {
+      maxY = Math.min(maxY, yesRect.top - 40);
+    }
+  } else {
+    // Desktop: avoid overlapping YES button
+    const yesCenterX = yesRect.left + yesRect.width / 2;
+    const yesCenterY = yesRect.top + yesRect.height / 2;
+    const minDistance = 150;
+    
+    let newX, newY;
+    let attempts = 0;
+    
+    do {
+      newX = Math.random() * (maxX - minX) + minX;
+      newY = Math.random() * (maxY - minY) + minY;
+      attempts++;
+      
+      // Check distance from YES button center
+      const distance = Math.sqrt(
+        Math.pow(newX + btnWidth/2 - yesCenterX, 2) +
+        Math.pow(newY + btnHeight/2 - yesCenterY, 2)
+      );
+      
+      if (distance > minDistance || attempts > 30) break;
+    } while (attempts <= 30);
+    
+    // Apply new position
+    noBtn.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+    
+    // Create sparkles at new position
+    setTimeout(() => {
+      createSparkles(newX + btnWidth/2, newY + btnHeight/2, 5);
+    }, 500);
+    
+    // Re-enable pointer events after animation
+    setTimeout(() => {
+      noBtn.style.pointerEvents = "auto";
+    }, 600);
+    return;
+  }
+  
+  // Mobile-specific positioning
+  // Try to place NO button in visible area
+  let newX = Math.random() * (maxX - minX) + minX;
+  let newY = Math.random() * (maxY - minY) + minY;
+  
+  // Ensure it's not too close to edges
+  newX = Math.max(minX, Math.min(newX, maxX));
+  newY = Math.max(minY, Math.min(newY, maxY));
+  
+  // Apply new position with smooth transition
+  noBtn.style.transition = "all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+  noBtn.style.left = newX + "px";
+  noBtn.style.top = newY + "px";
+  
+  // Create sparkles at new position
+  setTimeout(() => {
+    createSparkles(newX + btnWidth/2, newY + btnHeight/2, 5);
+  }, 500);
+  
+  // Re-enable pointer events after animation
+  setTimeout(() => {
+    noBtn.style.pointerEvents = "auto";
+  }, 600);
+}
+
+/* 💔 BREAK HEART - Enhanced */
+function breakHeart(x, y) {
+  for (let i = 0; i < 9; i++) {
+    const h = document.createElement("div");
+    h.className = "broken-heart";
+    h.innerHTML = "💔";
+    h.style.left = x + Math.random() * 40 - 20 + "px";
+    h.style.top = y + Math.random() * 40 - 20 + "px";
+    h.style.fontSize = Math.random() * 10 + 22 + "px";
+    h.style.animationDelay = Math.random() * 0.3 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1400);
+  }
+  
+  // Add small heart particles
+  for (let i = 0; i < 15; i++) {
+    const particle = document.createElement("div");
+    particle.className = "sparkle";
+    particle.style.background = i % 2 === 0 ? "var(--primary-pink)" : "var(--dark-pink)";
+    particle.style.width = "4px";
+    particle.style.height = "4px";
+    particle.style.left = x + Math.random() * 60 - 30 + "px";
+    particle.style.top = y + Math.random() * 60 - 30 + "px";
+    particle.style.animation = `sparkleTwinkle 0.8s ${Math.random() * 0.5}s forwards`;
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 800);
+  }
+}
+
+/* ❤️ SPAWN LOVE - Enhanced */
+function spawnLove() {
+  for (let i = 0; i < 15; i++) {
+    const h = document.createElement("div");
+    h.className = "love-heart";
+    h.innerHTML = i % 3 === 0 ? "💖" : i % 3 === 1 ? "💗" : "❤️";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.top = window.innerHeight * 0.7 + "px";
+    h.style.fontSize = Math.random() * 10 + 22 + "px";
+    h.style.animationDelay = Math.random() * 0.5 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 2500);
+  }
+}
+
+/* 🎉 END CELEBRATION - Enhanced */
+function endCelebration() {
+  // Play celebration sound
+  if (soundEnabled) {
+    celebrationSound.currentTime = 0;
+    playAudio(celebrationSound);
+  }
+  
+  // Fade out question and buttons
+  question.style.opacity = "0";
+  question.style.transform = "translateY(-20px)";
+  question.style.transition = "all 0.5s ease";
+  
+  buttons.style.opacity = "0";
+  buttons.style.transform = "scale(0.9)";
+  buttons.style.transition = "all 0.5s ease";
+  
+  setTimeout(() => {
+    question.style.display = "none";
+    buttons.style.display = "none";
+    
+    // Show final message
+    finalText.style.display = "block";
+    finalText.style.opacity = "0";
+    finalText.style.transform = "scale(0.8)";
+    
+    setTimeout(() => {
+      finalText.style.opacity = "1";
+      finalText.style.transform = "scale(1)";
+      finalText.style.transition = "all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)";
+    }, 100);
+    
+    // Create lots of love hearts
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        spawnLove();
+        spawnLove();
+      }, i * 300);
+    }
+    
+    // Create confetti
+    for (let i = 0; i < 150; i++) {
+      setTimeout(() => {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.animationDelay = Math.random() * 0.5 + "s";
+        confetti.style.width = Math.random() * 8 + 6 + "px";
+        confetti.style.height = Math.random() * 8 + 6 + "px";
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 3000);
+      }, i * 30);
+    }
+  }, 500);
+}
+
+// Initialize
+function init() {
+  createFloatingHearts();
+  resetCharacter();
+  
+  // Initial NO button position (centered)
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const btnWidth = noBtn.offsetWidth;
+  const btnHeight = noBtn.offsetHeight;
+  
+  // Position NO button initially in a safe spot
+  const initialX = Math.max(20, Math.min(vw - btnWidth - 20, vw * 0.7));
+  const initialY = Math.max(20, Math.min(vh - btnHeight - 80, vh * 0.3));
+  
+  noBtn.style.left = initialX + "px";
+  noBtn.style.top = initialY + "px";
+  noBtn.style.display = "block";
+  noBtn.style.visibility = "visible";
+  
+  // Start music automatically when page loads
+  setTimeout(() => {
+    startMusic();
+  }, 500);
+}
+
+// Run initialization when page loads
+window.addEventListener('DOMContentLoaded', init);
+
+// Handle window resize and orientation change
+let resizeTimeout;
+function handleResize() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    // Re-position NO button if it's off-screen after resize
+    const btnRect = noBtn.getBoundingClientRect();
+    if (btnRect.right > window.innerWidth || 
+        btnRect.bottom > window.innerHeight ||
+        btnRect.left < 0 || 
+        btnRect.top < 0) {
+      respawnNo();
+    }
+  }, 250);
+}
+
+window.addEventListener('resize', handleResize);
+window.addEventListener('orientationchange', handleResize);
+
+// Prevent zoom on mobile
+document.addEventListener('touchstart', function(e) {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(e) {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    e.preventDefault();
+  }
+  lastTouchEnd = now;
+}, { passive: false });
+</script>
+</body>
+</html>
